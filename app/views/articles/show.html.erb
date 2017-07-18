@@ -1,0 +1,26 @@
+<% provide(:title, "") %>
+<%= render "layouts/header" %>
+<div class="container">
+      <!-- Main component for a primary marketing message or call to action -->
+      <div class="jumbotron">
+        <h3><%= @article.title %></h3>
+        <%= markdown @article.content %>
+      </div>
+
+</div>
+<div class = "container">
+   <ul class="list-inline">
+    <li></li>
+    <li></li>
+   </ul>
+   <ol>
+
+   </ol>
+  <dl class="dl-horizontal">
+    <dt>Coffee</dt>
+    <dd>Black hot drink</dd>
+    <dt>Milk</dt>
+    <dd>White cold drink</dd>
+  </dl>
+</div>
+

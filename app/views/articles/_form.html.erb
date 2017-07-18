@@ -1,0 +1,237 @@
+      <%= form_for(@article, as: :article, html: { class: "form-signin", "ng-app"=>"app" } ) do |f| %>
+        <% if @article.errors.any? %>
+          <div id="error_explanation">
+            <div class="alert alert-error">
+              The form contains <%= pluralize(@article.errors.count, "error") %>.
+            </div>
+            <ul>
+            <% @article.errors.full_messages.each do |msg| %>
+              <li>* <%= msg %></li>
+            <% end %>
+            </ul>
+          </div>
+        <% end %>
+        <div id="form-summary" ng-controller="ArticleController">
+          <div>
+            <%= f.text_field :title, class: 'form-control', placeholder: 'Title'%>
+          </div>          
+          <div id="summary-panel" style="display:block">
+              <div style="margin-bottom: 10px;">
+                <div class="form-select-control">
+                  <%= f.select :category_id, Category.all.collect {|p| [ p.name, p.id ] }, { include_blank: true, prompt: 'Select Category'}, selected: nil, include_hidden: false, class: 'form-control chosen-select', 'data-placeholder' => "Select category"%>
+                </div>
+              </div>
+              <div class="form-select-control" style="margin-bottom: 10px;">
+                <%=fields_for (@article.tagArticles) do |t| %>
+                <%= collection_select :tags, :name, Tag.all, :name, :name, {:multiple => true, :selected => @tags.collect {|p| p.name } }, {multiple: true, class: "form-control chosen-select", 'data-placeholder' => " Select & edit tags"}%>
+                <% end %>
+              </div>
+              <!-- <div class="tags-container"><%= render 'tags' %></div> -->
+              <div class="control">
+              <%= f.text_field :reference, class: 'form-control', placeholder: 'Reference' %>
+              </div>
+          </div>
+          <div><a id="scrollUp" href="#top" style="position:relative; display: block;"><i class="fa fa-angle-down"></i></a></div>
+          <div style="clear: both">
+            
+            <div class="content-bar"><span>
+              <a id="content-preview" class="btn" href="javascript:void(0)" ng-click='submitArtist()'>Preview</a>
+              <a id="content-edit" class="btn" href="javascript:void(0)" ng-click='exchange()'>Edit</a></span>
+            </div>
+            <div id="area-container">
+              <input type="hidden" id="content_markdown" value='<%=@article.content_markdown %>'> 
+              <%= f.text_area :content_markdown, rows: 18, class: 'form-control', 'ng-model' => 'contents'%>
+              <%= f.hidden_field :content, value: '{{contents}}' %>
+              <div class='offset_bottom'></div>
+            </div>
+          </div>
+          
+        </div>
+        <div class="form-actions" ng-controller="ActionController">
+          <%= f.button :submit, class: 'btn btn-lg btn-primary btn-block'%>
+        </div>
+      <% end %>
+      <div id="preview-container" style='display: none'>
+        <div id="div-preview"></div>
+      </div>  
+
+<script>
+var app=angular.module('app',[]);
+app.controller("ArticleController", function($scope, myProvider){
+     $scope.$watch("contents", function(newVal, oldVal) {
+        console.log("new content:" + newVal);
+        console.log("old content:" + oldVal);
+        $scope.contents = newVal; 
+        //$scope.$emit("test", newVal);
+     },true);
+     $scope.data = {};
+     $scope.updateArtist = function(){
+        //myService.setArtist($scope.data.artist);
+     }
+     $scope.submitArtist = function(){
+       myProvider.callItunes()
+         .then(function(data){
+            $scope.data.artistData= data;
+             var data = data.replace('show', '');
+             var article = eval(data);
+             $('#div-preview').html(article.content);
+             $('#preview-container').insertBefore($('#article_content_markdown'));
+             $('#article_content_markdown').css('display', 'none');
+             $('#preview-container').css('display','block');       
+             $('#content-preview').attr('disabled','disabled');
+             $('#content-edit').removeAttr("disabled")
+
+        }, function(data) {
+            alert(data);
+        })
+
+     }
+     $scope.exchange = function() {
+      $('#preview-container').insertBefore($('#article_content_markdown'));
+      $('#article_content_markdown').css('display', 'block');
+      $('#preview-container').css('display','none'); 
+      $('#content-edit').attr('disabled','disabled');
+      $('#content-preview').removeAttr("disabled");      
+     }
+
+});
+app.directive('ngBlur', function(){
+     return {
+          restrict:'A',
+          link: function (scope, element, attrs) {
+               $(element).bind('blur', function(){
+                    scope.$apply(attrs.ngBlur);
+               });
+          }
+     };
+});
+
+$(document).ready(function() {
+   $('#article_content_markdown').val($('#content_markdown').val());
+   $('#article_content').val($('#content_markdown').val());
+   $('#ct_sidenav a').each(function(){
+     $(this).bind('click', function() {
+        var selected_option = $('#article_category_id').find('option[value='+ $(this).find('span').attr('id') + ']');
+        $('#article_category_id')[0].selectedIndex = selected_option.get(0).index;
+     }); 
+
+   })
+   $('#summary-panel').css('display', 'none');
+   $('#scrollUp').on('click', function() {
+      if($('#summary-panel').css('display') == 'none') {
+        $('#summary-panel').css('display', 'block');
+        $(this).find('i').attr('class', $(this).find('i').attr('class').replace('fa-angle-down', 'fa-angle-up'));   
+      } else {
+        $('#summary-panel').css('display', 'none');
+        $(this).find('i').attr('class', $(this).find('i').attr('class').replace('fa-angle-up', 'fa-angle-down'));
+      }
+      $('div.chosen-container').css('width', '100%');
+
+   })
+
+  //$('.form-actions button:submit').on('click', function() {
+  $('#btn_ajax').on('click', function(event){
+       var datas = {};
+       datas.article_id = "<%=@article.id%>"; 
+       datas.tags = [];
+       $('div[id^=lbl_keywords_row]').each(function(){
+           $(this).find('[id^=lbl_keyword_]').each(function() {
+              if ($(this).text().trim().length > 0) {
+                datas.tags.push($(this).text());
+              }
+
+           });
+       });
+       $.ajax({
+       type: "GET",
+       url: "/articletags", 
+       dataType: "jsonp",
+       timeout: 200,
+       crossDomain: true,
+       jsonp: "callback",
+       jsonpCallback: 'show',
+       cache: false, 
+       data: datas,
+       success: function(data) { alert(data);}, /* more option */
+       complete: function(data) { 
+         
+       }
+     })
+   });
+
+  //$(".chosen-select").find('option').attr('selected', 'selected'); 
+  var config = {
+              '.chosen-select'           : {},
+              '.chosen-select-deselect'  : {allow_single_deselect:true},
+              '.chosen-select-no-single' : {disable_search_threshold:10},
+              '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+              '.chosen-select-width'     : {width:"95%"}
+            }
+    for (var selector in config) {
+      $(".chosen-select").chosen(config[selector]);
+    }
+
+});
+app.provider('myProvider', function(){
+    var baseUrl='http://localhost:3000/articlejson';
+    var _artist ='';
+    var _finalUrl='';
+    var thingFromConfig='';
+    var makeUrl= function(){
+      _artist = artist.split(' ').join('+');
+      _finalUrl = baseUrl+_artist+'&callback=JSON_CALLBACK';
+      return _finalUrl;
+    }
+    this.$get=function($http, $q) {
+     return {
+        callItunes: function() {
+           var deferred = $q.defer();
+           $http({
+                url: "/articlejson?callback=JSON_CALLBACK", 
+                method: "POST",
+                params: {id: '1', name: 'detous'},
+                data: {content: $('#article_content_markdown').val()} 
+
+            }).success(function(data){
+              deferred.resolve(data);
+            }).error(function(){
+                deferred.reject('There was an error');
+            })
+            return deferred.promise; 
+        },
+        setArtist: function(artist){
+            _artist = artist;
+        },
+        getArtist: function(){
+           return _artist;
+        },
+        thingOnConfig: thingFromConfig
+     }
+     
+    }   
+});
+
+$('#btn_ajax1').on('click', function(event){
+    $.ajax({
+       type: "GET",
+       url: "/articles/1", 
+       dataType: "jsonp",
+       timeout: 200,
+       crossDomain: true,
+       jsonp: "callback",
+       jsonpCallback: 'show',
+       cache: false, 
+       success: function(data) { alert('success');}, /* more option */
+       complete: function(data) { 
+         alert('complete');
+       },
+       error: function(){
+           
+       }
+     })
+})
+function show(data) {
+   alert(data.name);
+}
+
+</script>

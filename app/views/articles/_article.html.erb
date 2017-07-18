@@ -1,0 +1,3 @@
+<% @articles.each do |article| %><li><h3><%= link_to article.title, article %></h3>
+  <p><%= sanitize article.content %></p></li>
+<% end %>

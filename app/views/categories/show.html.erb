@@ -1,0 +1,10 @@
+<% provide(:title, "") %>
+<%= render "layouts/header" %>
+<div class="container">
+      <!-- Main component for a primary marketing message or call to action -->
+      <div class="jumbotron">
+        <h3><%= @category.name %></h3>
+        <%= markdown (@category.description) %>
+      </div>
+
+</div>

@@ -1,0 +1,10 @@
+ <div class="container-fluid">
+   <div class="row">      
+      <%= form_tag('/articles/search', method: 'post', remote: true, class: 'form-search') do %>
+         <div class="align-center">
+          <div style="width: 80%;float: left"><%= text_field_tag('keywords', nil, type: :search, class: 'form-control', placeholder: 'Article search') %></div>
+          <div style="float: left"><%= submit_tag 'Search', class: 'btn btn-md btn-primary btn-block'  %></div>
+         </div>
+      <% end %>
+   </div>
+ </div>

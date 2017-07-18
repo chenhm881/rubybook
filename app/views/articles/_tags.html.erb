@@ -1,0 +1,127 @@
+<div id="lbl_keywords">
+  <% (@weight ||= 0).times do |time| %>
+   <% tags = @article.rel_tag_articles.each_with_index.select{|tag, i| (time * 5) <= i && i < ((time+1) * 5)}  %>
+   <div class="row" id="lbl_keywords_row<%=time%>">  
+   <% tags.each do |tag| %> 
+     <% if time==0 %>  
+        <div id="lbl_keyword_<%=time%>_<%=tag[1]%>" class="col-md-2"><%=tag[0].name %></div>
+     <% else %>
+        <div id="lbl_keyword_<%=time%>_<%=tag[1]%>" onclick="closeLbl(this)" class="col-md-2"><%=tag[0].name %></div>
+     <% end %>
+   <% end %>
+   <% (5-tags.length).times do |re | %>
+     <div id="lbl_keyword_<%=time%>_<%=tags.length + re %>" class="col-md-2"></div>
+   <% end %>
+   <div class="col-md-2"></div>
+   </div>
+  <% end %>
+</div>
+<div class="row" id="inp_keywords">
+  <% 5.times do |index| %>
+  <div class="col-md-2"><%=text_field_tag "inp_keyword_#{index}", nil, class: 'form-control', 'ng-model'=> "keyword_#{index}" %> </div>   
+  <% end %>
+  <div class="col-md-2">
+  <a id="AddRowLink" href="javascript:void(0);">
+    <span class="icon icon-add" aria-hidden="true"></span>
+    Add Row </a>
+  </div>
+</div>
+<div id="btn-tag-container">
+  <%= button_tag(type: 'button', id:'btn_ajax', style: 'visibility: visible') do %>
+  <%= content_tag(:strong, 'Save me!')%>
+  <% end %>
+</div>
+<%=text_area_tag 'description', nil, class: 'form-control' %>
+<script type="text/javascript">
+  $('#AddRowLink').bind('click', function() {
+     $('#inp_keywords input').each(function() {
+        $(this).val('');
+     });
+     var addRowKeyword = "";
+     var pre_row = $('div[id^=lbl_keywords_row]:last');
+     var rowId = $('div[id^=lbl_keywords_row]:first').attr('id').match("\\d+")[0];
+     rowId = parseInt(rowId) + 1;
+     addRowKeyword += '<div class="row" id="lbl_keywords_row'+rowId.toString()+'">';
+     var ind = 0;
+     $('#inp_keywords input:text').each(function (){
+         if ($(this).val().trim().length > -1) {
+           addRowKeyword += '<div id="lbl_keyword_'+ rowId.toString()+ '_' +ind+ '" onclick="closeLbl(this)" class="col-md-2"';
+           if (pre_row.find("div").eq(ind).text().trim().length > 0 ) {
+              addRowKeyword += '>' + pre_row.find("div").eq(ind).html();  
+           } 
+           else {
+              addRowKeyword += ' style="visibility: hidden">';  
+           }
+           addRowKeyword += '</div>'; 
+           ind += 1;
+         }
+     });
+     addRowKeyword += "</div>";
+     $('div[id^=lbl_keywords_row]:last').find('div').each(function() {
+        $(this).html('');
+     });
+     $(addRowKeyword).insertBefore($('div[id^=lbl_keywords_row]:first')); 
+ 
+  });
+  var lbl_keywords_html = '';
+  var index = 0;
+  var init_row = $('div[id^=lbl_keywords_row]:last');
+
+  if (init_row.is(":visible")) {
+    var rowId = $('div[id^=lbl_keywords_row]:last').attr('id').match("\\d+")[0];
+    rowId = parseInt(rowId) + 1;
+    lbl_keywords_html += '<div class="row" id="lbl_keywords_row'+rowId.toString()+'">';
+    $('#inp_keywords input:text').each(function (){
+         lbl_keywords_html += '<div id="lbl_keyword_'+ rowId.toString() + '_' +index+ '" onclick="closeLbl(this)" class="col-md-2"'; 
+         if (init_row.find("div").eq(index).text().length > 0 ) {
+           lbl_keywords_html += '>' + init_row.find("div").eq(index).text();
+         } 
+         else {
+           lbl_keywords_html += ' style="visibility: hidden">'; 
+         }
+         lbl_keywords_html += '</div>'; 
+         index += 1;
+    }); 
+    lbl_keywords_html += '</div>';
+    var ind = 0
+    $('div[id^=lbl_keywords_row]:last').find('div').each(function() {
+        if ($(this).next().length > 0) {
+          $(this).html('');
+          $(this).attr('ng-bind', 'keyword_' + ind);          
+        }
+        ind += 1;
+     });
+    $(lbl_keywords_html).insertBefore($('div[id^=lbl_keywords_row]:last')); 
+     
+  } else {
+    lbl_keywords_html += '<div class="row" id="lbl_keywords_row0">';
+    $('#inp_keywords input:text').each(function (){
+       if ($(this).val().trim().length > -1) {
+         lbl_keywords_html += '<div id="lbl_keyword_0_'+ index+ '" class="col-md-2" ng-bind="keyword_' + index + '"></div>';
+         index += 1;
+       }
+    });
+
+    lbl_keywords_html += '<div class="col-md-2"></div></div>';
+    $('#lbl_keywords').html(lbl_keywords_html);
+  
+  }
+
+  function closeLbl(obj) {
+    $(obj).css('visibility','hidden');
+    $(obj).text('');
+    if ($(obj).parent().children('[style*="hidden"]').length == 5) {
+       $(obj).parent().css('display', 'none');
+   }
+  }
+
+$(document).ready(function (){
+  
+  var btn_html = $('#btn-tag-container').html();
+  $('#btn-tag-container').css('display', 'none');
+  $('#btn-tag-container').removeAttr('id');
+  $('#lbl_keywords_row0 > div:last').html(btn_html);
+  
+}) 
+</script>
+

@@ -1,0 +1,113 @@
+// Place all the styles related to the articles controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+/* this CSS is not part of the widget, it is here just as an example of the demo page styling.... Don't copy this one, roll your own. One
+ * of the key things about the widget is that it allows you to do your own styling!
+ */
+/*
+#editor {
+  max-height: 250px;
+  height: 250px;
+  background-color: white;
+  border-collapse: separate; 
+  border: 1px solid rgb(204, 204, 204); 
+  padding: 4px; 
+  box-sizing: content-box; 
+  -webkit-box-shadow: rgba(0, 0, 0, 0.0745098) 0px 1px 1px 0px inset; 
+  box-shadow: rgba(0, 0, 0, 0.0745098) 0px 1px 1px 0px inset;
+  border-top-right-radius: 3px; border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px; border-top-left-radius: 3px;
+  overflow: scroll;
+  outline: none;
+}
+#voiceBtn {
+  width: 20px;
+  color: transparent;
+  background-color: transparent;
+  transform: scale(2.0, 2.0);
+  -webkit-transform: scale(2.0, 2.0);
+  -moz-transform: scale(2.0, 2.0);
+  border: transparent;
+  cursor: pointer;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+}
+
+div[data-role="editor-toolbar"] {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.form-article {
+ margin: 0 0;
+}
+
+#form-summary .form-select-control {
+  max-width: 334px;
+}
+
+
+#form-summary #form-summary-heading,
+#form-summary .checkbox {
+  margin-bottom: 10px;
+}
+
+#form-summary .checkbox {
+  font-weight: normal;
+}
+
+#lbl_keywords > div, #inp_keywords {
+  margin-left:0px;
+  margin-right: 0px;
+}
+
+#lbl_keywords, #inp_keywords {
+  margin-left: -15px;
+}
+
+#form-summary .form-control {
+  position: relative;
+  height: auto;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 10px;
+  font-size: 16px;
+}
+
+#form-summary .form-control:focus {
+  z-index: 2;
+}
+
+#form-summary input[type*=""] {
+  margin-bottom: 1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.form-article button[type="submit"] {
+  margin-top: 12px;
+  max-width: 80px;
+}
+
+@media screen and (max-device-width: 400px) {
+
+}
+#error_explanation {
+  color: #f00;
+  ul {
+    list-style: none;
+    margin: 0 0 18px 0;
+  }
+}
+.field_with_errors {
+  @extend .control-group !optional;
+  @extend .error !optional;
+ }
+ */
+.popover {
+border: 0px;
+border-radius: 0px;
+box-shadow: none;
+}

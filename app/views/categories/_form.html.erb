@@ -1,0 +1,21 @@
+  
+      <%  submit_type = "Create"
+            if !@category.name.nil?
+               submit_type = "Update"
+            end
+      %> 
+      
+      <%= form_for(@category) do |f| %>
+      <div id="login">
+            <fieldset class="classic-fieldset">           
+            <div class="input-fields">
+            <p><%= f.label :name %><%= f.text_field :name, placeholder: "Name"%></p>
+            <p><%= f.label :name %><%= f.select :parent_id, Category.all.collect {|p| [ p.name, p.id ] }.unshift(["请选择一个分类", 0]), { include_blank: true, prompt: 'Select Category'}, selected: nil, include_hidden: false%></p>
+            <p><%= f.label :description %><%= f.text_field :description, placeholder: "Description"%></p>
+            </div><!-- input-fields -->
+              <p><%= f.submit "#{submit_type} my account", class: "submit button" %></p>
+              <div id="savestatus"></div>
+            
+            </fieldset>
+        </div>
+        <% end %>

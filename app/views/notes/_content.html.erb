@@ -1,0 +1,15 @@
+<%= form_for(@note, as: :note, remote: true, html: {style: 'height: 100%'}) do |f| %>
+	<div id="static_content" style="display: none;"></div>
+	<%= hidden_field_tag :tags, :name, class: 'tags'%>
+	<%= f.hidden_field :title, class: 'title', 'ng-model' => 'contentlist[index]["title"]'%>
+	<%= f.text_area :content, spellcheck: 'false', cols: '4096', class: 'ng-valid ng-dirty content', 'ng-model' => 'contentlist[index]["contents"]'%>
+	<textarea id="historytxt" cols="4096" readonly="readonly" style="display: none;"></textarea>
+<% end %>
+<input type='hidden' id="content_id"/>
+<!--
+<%= form_tag('/articles/save_content', method: 'post', remote: true, html: {style: 'height: 100%'}) do %>
+	<div id="static_content" style="display: none;"></div>
+	<%= text_area_tag :content, nil, spellcheck: 'false', cols: '4096', class: 'ng-valid ng-dirty', 'ng-model' => 'contentlist[index]["contents"]'%>
+	<textarea id="historytxt" cols="4096" readonly="readonly" style="display: none;"></textarea>
+<% end %>
+-->

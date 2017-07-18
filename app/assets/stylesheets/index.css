@@ -1,0 +1,165 @@
+/* this CSS is not part of the widget, it is here just as an example of the demo page styling.... Don't copy this one, roll your own. One
+ * of the key things about the widget is that it allows you to do your own styling!
+ */
+
+/*
+body{
+	 font-family: 'microsoft yahei',Arial,sans-serif;
+}
+
+.hero-unit h1{
+	color:#C77405;
+}
+
+#editor {
+	max-height: 550px;
+	height: 550px;
+	background-color: white;
+	border-collapse: separate; 
+	border: 1px solid rgb(204, 204, 204); 
+	padding: 4px; 
+	box-sizing: content-box; 
+	-webkit-box-shadow: rgba(0, 0, 0, 0.0745098) 0px 1px 1px 0px inset; 
+	box-shadow: rgba(0, 0, 0, 0.0745098) 0px 1px 1px 0px inset;
+	border-top-right-radius: 3px; border-bottom-right-radius: 3px;
+	border-bottom-left-radius: 3px; border-top-left-radius: 3px;
+	overflow: scroll;
+	outline: none;
+}
+#voiceBtn {
+  width: 20px;
+  color: transparent;
+  background-color: transparent;
+  transform: scale(2.0, 2.0);
+  -webkit-transform: scale(2.0, 2.0);
+  -moz-transform: scale(2.0, 2.0);
+  border: transparent;
+  cursor: pointer;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+}
+
+div[data-role="editor-toolbar"] {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.dropdown-menu a {
+  cursor: pointer;
+}
+
+.align-center{
+ margin:0 auto;   
+  width:70%;    
+  text-align:center; 
+}
+*/
+#menu {
+width: 100%;
+clear: both;
+display: block;
+background-color: #143352;
+height: 42px;
+border-top: 2px solid rgba(92, 153, 214, 0.5);
+border-bottom: 2px solid rgba(15, 38, 61, 0.5);
+box-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+-moz-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+-webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+}
+#menu ul.navbar-nav li a{
+  color: white;
+}
+.form-signin .form-control {
+  border-radius: 0;
+}
+.form-signin a.chosen-single {
+  border-radius: 0;
+}
+.form-signin .form-control {
+  margin-bottom: 10px;
+}
+
+#scrollUp {
+background-color: #777;
+color: #eee;
+font-size: 40px;
+line-height: 1;
+text-align: center;
+text-decoration: none;
+overflow: hidden;
+width: 46px;
+height: 46px;
+border: none;
+opacity: .8;
+float: right;
+margin-bottom: 10px;
+}
+
+.fa-angle-up:before {
+    content: "\f106"
+}
+
+.fa {
+display: inline-block;
+font: normal normal normal 14px/1 FontAwesome;
+font-size: inherit;
+text-rendering: auto;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+}
+
+.fa-angle-down:before {
+    content: "\f107"
+}
+
+.content-bar {
+background-color: #eee;  
+border-top: 1px solid #cccccc;
+border-left: 1px solid #cccccc;
+border-right: 1px solid #cccccc;
+}
+.content-bar a {
+color: #555;
+font-family: verdana, helvetica, arial, sans-serif;
+font-size: 16px;
+height: 34px;
+}
+#preview-container {
+border-top: 1px solid #cccccc; 
+border-bottom: 1px solid #cccccc;
+border-left: 1px solid #cccccc;
+border-right: 1px solid #cccccc;
+margin-bottom: 10px;
+}
+
+.form-actions button[type='submit'] {
+border-radius: 0;
+background-color: #eee;  
+border: 1px solid #cccccc;
+color: #555;
+padding-top: 5px;
+padding-bottom: 5px;
+}
+
+.form-search input[type='submit'], .form-search input[type='search'] {
+border-radius: 0;
+}
+
+#sub-header {
+  padding:20px;
+  margin: 0 auto;
+  border-bottom: 1px sold #ccc;
+  background-color: #f5f5f5;
+  margin-top: -20px;
+}
+.search-results{
+  list-style: none;
+
+}
+.search-results h3 {
+font-size: 16px;
+line-height: 1.5625;
+margin: 30px 0 0 0;
+}

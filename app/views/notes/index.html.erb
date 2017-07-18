@@ -1,0 +1,482 @@
+<script type="text/javascript">
+var _index = 0;
+var _contentlist=[];
+(function() {
+  /* Link the css files the note require and remove the application css file
+  begin
+  */
+  var lkList =
+  [
+   {'tagName':'link', 'media': 'screen', 'rel': 'stylesheet', 'type': 'text/css', 'href': 'jquery-ui-1.8.2.custom.trimmed.css.css'},
+   {'tagName':'link', 'media': 'screen', 'rel': 'stylesheet', 'type': 'text/css', 'href': 'editor.css'},
+   {'tagName':'link', 'media': 'screen', 'rel': 'stylesheet', 'type': 'text/css', 'href': 'editor-extension.css'},
+   {'tagName':'link', 'media': 'screen', 'rel': 'stylesheet', 'type': 'text/css', 'href': 'dev.css'}
+  ];
+  for (var i = 0; i < lkList.length; i++) {
+     var lk = document.createElement(lkList[i].tagName);
+     lk.setAttribute('rel', lkList[i].rel);
+     lk.setAttribute('media', lkList[i].media);
+     lk.setAttribute('href', '/' + lkList[i].href);
+     lk.setAttribute('type', lkList[i].type);
+     $(lk).insertAfter($('head').children('link:last'));
+  }
+  $('link[rel=stylesheet][href*=application]').remove();
+  //end
+  /* ready for the angularjs
+   begin
+  */
+  Chosen = (function(name) {
+
+    function Chosen(name) {
+       this.name = name;
+       this.options_index = 0;
+       this.parsed = [];
+       //this.item = {array_index: 1, html: '', disabled: true};
+       this.search_field = $('#as-input-084');
+       this.container = $('#as-selections-084');
+       this.register_observers();
+    }
+    Chosen.prototype.choice_build = function(item) {
+        var choice, _this = this;
+        choice = $('<li />', {
+          "class": "as-selection-item"
+        }).html(item.val());
+        _this.container.find('li.as-selection-item').each(function (){
+            $(this).removeClass('selected');
+        });
+        choice.addClass('selected');
+        choice.insertBefore(_this.container.find('li.as-original'));
+    };
+    Chosen.prototype.choice_destroy_link_click = function(evt) {
+        evt.preventDefault();
+        evt.stopPropagation();
+        if (!this.is_disabled) {
+          return this.choice_destroy($(evt.target));
+        }
+    };
+    Chosen.prototype.choice_destroy = function(link) {
+        link.parents('li').first().remove();
+        return this;
+    };
+
+    Chosen.prototype.keyup_checker = function(evt) {
+        var stroke, _ref, _this = this;
+        stroke = (_ref = evt.which) != null ? _ref : evt.keyCode;
+        switch (stroke) {
+          case 13:
+           evt.preventDefault();
+           var no_record_search = true;
+            _this.container.find('li.as-selection-item').each(function () {
+               if ($(this).text().trim() == _this.search_field.val().trim()){
+                  no_record_search = false;
+               }
+            });
+            if(no_record_search) {
+              _this.choice_build(_this.search_field);
+              if (window._contentlist[window._index].indexOf(_this.search_field.val()) < 0) {
+                window._contentlist[window._index].push(_this.search_field.val());
+              }
+              _this.search_field.val('');
+
+            }
+          break;
+          case 8:
+            evt.preventDefault();
+            if(_this.search_field.val().length == 0) {
+              _this.container.find('li.as-selection-item:last').remove();
+              window._contentlist[window._index].pop();
+            }
+          break;
+          case 46:
+            evt.preventDefault();
+            if(_this.search_field.val().length == 0) {
+              _this.container.find('li.as-selection-item:last').remove();
+              window._contentlist[window._index].pop();
+            }
+          break;
+        }
+
+    }
+    Chosen.prototype.register_observers = function() {
+      var _this = this;
+      _this.search_field.bind('keyup.chosen', function(evt) {
+          _this.keyup_checker(evt);
+      });
+      _this.container.bind('click.chosen', function(evt) {
+
+      });
+    }
+    return Chosen;
+  })();
+
+  $('body').attr('ng-app', 'app');
+  //end
+})();
+$('document').ready(function () {
+  var chosen = new Chosen('chosen');
+})
+</script>
+    <div id="print_helper"></div>
+    <div class="wrapper">
+    <div class="app" ng-controller="ContentController">
+    <div class="toolbar">
+      <input type="text" class="searchfield" ng-model = 'searchfield'>
+       <span class="searchcancel" style="display:none"></span>
+        <ul class="left-tools">
+            <li>
+              <a href="javascript:void(0)" title="Add Note" class="add tbutton" ng-click="add()">Add</a>
+            </li>
+            <ul class="left-side-menu">
+              <li class="view-mode sn-rocker" id="view_mode_container" role="list" style="display: none;"><a class="button sn-rocker-option active" role="option" href="" title="Mode: Edit Note" id="view_mode_edit">Edit</a><a class="button sn-rocker-option" role="option" href="" title="Mode: Markdown Preview" id="view_mode_markdown">Preview</a>
+            </li>
+            </ul>
+        </ul>
+
+        <div class="header">
+            <div class="popover button inactive"><span id="user_account_menu"><%=current_user.name %></span>
+                <div class="menu settingsmenu">
+                    <span class="tail"></span>
+                        <ul>
+                            <li><a href="https://app.simplenote.com/settings">Settings</a></li>
+                            <li><a id="signout" href="https://app.simplenote.com/logout">Sign Out</a>
+                            <form id="signoutform" action="https://app.simplenote.com/logout" method="POST" style="display:none">
+                                <input type="hidden" name="csrf_token" value="76e941a092e78ff8005fb38d84998000d544982bb280b4c37bb6801df84d06f8">
+                            </form>
+                            </li>
+
+    <!--                         <li><a href="/settings">Upgrade to Premium</a></li>
+     -->
+                            <li style="position: relative"><a id="ziplink" href="">Download .zip</a>
+                            <img id="zipbusy" style="display:none;position:absolute;left:110px;top:-23px;" src="./Simplenote_files/ajax-loader.gif"></li>
+                        </ul>
+                </div>
+            </div>
+        </div>
+
+
+        <ul class="tools">
+            <li>
+              <a href="javascript:void(0)" title="Note info &amp; settings" class="info-btn tbutton" style="display: block;" ng-click="save()">Save</a>
+            </li>
+            <li><a href="" title="Restore Note" class="restore tbutton" style="display: none;">Restore</a></li>
+            <li class="popover"><a href="" title="View Versions of this note" class="versions tbutton" style="display: block;">Versions</a>
+                <div class="menu history">
+                    <span class="tail"></span>
+                    <h4>Version History</h4>
+                    <div class="versions-left fl">
+                    <div id="versions" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all ui-slider-disabled ui-disabled ui-state-disabled" aria-disabled="true"><a href="https://app.simplenote.com/#" class="ui-slider-handle ui-state-default ui-corner-all" disabled="disabled" style="left: 0%;"></a></div>
+                    </div>
+                    <div class="versions-right fr">
+                     <button class="version-restore button disabled">Restore</button>
+                    </div>
+                    <label id="versionlabel"><p>No versions</p></label>
+                </div>
+            </li>
+            <li><a href="" title="Delete Note" class="delete tbutton" style="display: block;" ng-click="delete()">Delete</a>
+            </li>
+            <li class="popover sharemenu" style="display: block;"><a href="" title="Share this note" class="share tbutton">Share</a>
+                <div class="menu sharepopover">
+                    <span class="tail"></span>
+                    <ul>
+                        <li><a href="" class="publishnote" style="display: block;">Publish…</a></li>
+                        <li><a href="" class="publishednote" style="display: none;">Published…</a></li>
+                        <li><a href="" class="sharenote">Share…</a></li>
+                        <li><a href="" class="cannotsharenote" style="display:none;"><em>Cannot re-share…</em></a></li>
+                        <li><a href="" class="emailnote">Send by Email…</a></li>
+                        <li><a href="" class="printnote">Print…</a></li>
+                    </ul>
+                </div>
+            </li>
+
+        </ul>
+    </div><!--/.toolbar-->
+
+        <div class="sidebar">
+
+                <ul class="sideview">
+                <li style="float:right;display:none" class="notecount">0 Notes</li>
+                    <li class="tagmenu button popover">
+                      <%=select_tag "Categories", options_from_collection_for_select(Category.all, "id", "name"), include_blank: true,  'ng-model' => 'categoryid' %>
+                    </li>
+                </ul>
+
+            <ul class="notes">
+               <li class="with-1-preview-lines" ng-repeat="note in contentlist|filter:searchfield" ng-click="select($index)"><div class="note-preview-title">{{note.title}}</div><p class="note-preview-line note-preview-line-1">{{note.content}}</p></li>
+            </ul>
+        </div>
+
+        <div class="tagbar"><ul class="as-selections" id="as-selections-084">
+          <li class="as-selection-item" data-prop="{{tag}}" ng-repeat='tag in tags'>{{tag}}</li>
+          <li class="as-original" id="as-original-084"><input id="as-input-084" autocomplete="off" type="text" size="100" class="as-input as-prompt"></li></ul><div class="as-results" id="as-results-084" style="display: none;"></div>
+        </div>
+
+          <ul class="statusbar">
+            <li><div id="criticalmsg"></div></li>
+            <li><img id="ajaxbusy" style="display:none" src="./Simplenote_files/ajax-loader.gif"></li>
+            <li><div id="statusmsg"></div></li>
+          </ul>
+
+        <div id="note" class="note">
+          <%= render 'content' %>
+        </div>
+
+    </div>
+    </div>
+
+    <div id="lightbox_hacks" style="display:none;">
+      <a href="https://app.simplenote.com/#modal_signin_form" id="show_modal_signin_form">Sign in</a>
+      <a href="https://app.simplenote.com/#publish_success_form" id="show_publish_success_form">Published…</a>
+      <a href="https://app.simplenote.com/#already_published_form" id="show_already_published_form">Already Published…</a>
+      <a href="https://app.simplenote.com/#sharenote_form" id="show_sharenote_form">Share Note…</a>
+      <a href="https://app.simplenote.com/#cannotsharenote_form" id="show_cannotsharenote_form">Share Note…</a>
+      <a href="https://app.simplenote.com/#unpublished_form" id="show_unpublished_form">Unpublished…</a>
+      <a href="https://app.simplenote.com/#details_form" id="show_details_form">Details…</a>
+      <a href="https://app.simplenote.com/#error_form" id="show_error_form">Error…</a>
+      <a href="https://app.simplenote.com/#old_ie_form" id="show_old_ie_form">Old IE…</a>
+      <a href="https://app.simplenote.com/#post_install_form" id="show_post_install_form">Great!…</a>
+    </div>
+
+    <div id="message_library" style="display:none;">
+        <div id="modal_signin_form" class="lightbox-contents lightbox-form easy-form">
+          <input type="hidden" id="modal_signin_e" name="email" value="chenhm881@hotmail.com">
+          <p class="spaced explanotext">Your session expired. Please sign in again.</p>
+          <p class="clearfix"><label for="modal_signin_user_display">Email</label><span class="input-wrap"><span class="fake-data" id="modal_signin_user_display" title="Simplenote account email">chenhm881@hotmail.com</span></span><span class="clear sizezero">&nbsp;</span></p>
+          <p class="clearfix"><label for="modal_signin_p">Password</label><span class="input-wrap"><input type="password" id="modal_signin_p" name="password" title="Simplenote account password"></span><span class="clear sizezero">&nbsp;</span></p>
+          <p class="submitwrap center"><input type="button" id="modal_signin_submit" class="submit button" value="Continue" role="button"></p>
+          <p class="warn"></p>
+        </div>
+        <div id="msg_network_trouble">Internet disconnected? (Will retry.)</div>
+        <div id="msg_server_trouble">Server trouble. (Will retry.)</div>
+        <div id="msg_unauthorized">Session expired</div>
+        <div id="msg_authentication_failure">Your email address or password seems incorrect. Please try again.</div>
+        <div id="publish_success_form" class="lightbox-contents lightbox-text ajax-form">
+          <h3>Note Published!</h3>
+          <p>Anyone who knows the URL below will be able to view the latest version of this note.</p>
+          <p class="clearfix easy-form">
+            <label title="Published Note URL">URL</label>
+            <span class="input-wrap"><input type="text" readonly="" class="click-focuses fancybox-field" id="publish_success_output"></span>
+         </p>
+          <p class="center"><input type="button" class="button modal-dismiss submit" value="OK" role="button"></p>
+        </div>
+        <div id="already_published_form" class="lightbox-contents lightbox-text ajax-form">
+          <h3>People can use this link to see your note.</h3>
+          <div class="clearfix easy-form">
+            <span class="input-wrap"><input type="text" readonly="" class="click-focuses fancybox-field" id="already_published_output"></span>
+          </div>
+          <p class="clearfix easy-form">
+                <span class="input-wrap"><input type="button" id="unshare_note_button" class="button submit modal-dismiss" value="Unpublish" role="button"></span>
+            </p>
+            <p class="center"><input type="button" class="button modal-dismiss submit" value="Done" role="button"></p>
+        </div>
+
+        <div id="unpublished_form" class="lightbox-contents lightbox-text">
+            <h3>Note No Longer Published</h3>
+            <p>This note will not be available by its former published URL any more.</p>
+          <p class="center"><input type="button" class="button modal-dismiss submit" value="OK" role="button"></p>
+        </div>
+
+        <div id="error_form" class="lightbox-contents lightbox-text lightbox-error-message">
+            <h3>We're Sorry</h3>
+            <div id="error_form_fillable_contents"></div>
+          <p class="center"><input type="button" class="button modal-dismiss submit" value="OK" role="button"></p>
+        </div>
+
+        <div id="sharenote_form" class="lightbox-contents lightbox-form ajax-form">
+            <h3>Add an email address as a tag to share a note with someone. You'll both be able to edit it.</h3>
+          <p class="center"><input type="button" class="button modal-dismiss submit" value="OK" role="button"></p>
+        </div>
+
+        <div id="cannotsharenote_form" class="lightbox-contents lightbox-form ajax-form">
+            <h3>Cannot Share</h3>
+            <p>This note was created by someone else. Only they can share or publish it.</p>
+          <p class="center"><input type="button" class="button modal-dismiss submit" value="OK" role="button"></p>
+        </div>
+
+        <div id="details_form" class="lightbox-contents lightbox-text">
+            <h3>Details</h3>
+            <table border="0">
+                <tbody><tr>
+                    <td><span id="details_wc"></span> Words (approx.)</td>
+                    <td><span id="details_char"></span> Characters</td>
+                </tr>
+                <tr><td colspan="2">&nbsp;</td></tr>
+                <tr>
+                    <td>
+                        <label>
+                            <input type="checkbox" value="1" id="details_pinned_chk">
+                            Pinned to Top
+                        </label>
+                    </td>
+                    <td>
+                        <label>
+                            <input type="checkbox" value="1" id="details_markdown_chk">
+                            Markdown Formatted
+                        </label>
+                    </td>
+                </tr>
+                <tr><td colspan="2">&nbsp;</td></tr>
+                <tr>
+                    <td colspan="2">
+                        <p><small>Pinned notes are listed before other notes.</small>
+                      <br><small>We support <a href="http://daringfireball.net/projects/markdown/" target="_blank">Markdown</a> extensions.</small></p>
+                    </td>
+                </tr>
+            </tbody></table>
+            <br>
+          <p class="center"><input type="button" class="button modal-dismiss submit" value="Done" role="button"></p>
+        </div><!--details-->
+
+        <div id="old_ie_form" class="lightbox-contents lightbox-text">
+            <h3>A Better Simplenote</h3>
+            <p class="not-ie8">You’re using an out-of-date browser, but not all hope is lost.
+              In four minutes, you can enjoy a faster and better-looking
+            Simplenote!</p>
+            <p class="for-ie8">In four minutes, you can be using a faster, better Simplenote.</p>
+            <p>The fix? A free plugin from Google, called <a href="http://www.google.com/chromeframe" target="_blank">Chrome Frame</a>. It installs in minutes –
+              no admin privileges or restart required.</p>
+            <br>
+            <p class="call center"><a class="button install-cf" href="http://www.google.com/chromeframe" target="_blank">Install Chrome Frame</a></p>
+          <p class="fr"><a href="https://app.simplenote.com/?" class="button install-cf modal-dismiss prevent-default">Done</a></p>
+          <p class=""><a href="https://app.simplenote.com/#" role="button" class="button no-thanks-cf modal-dismiss">No, Thanks</a></p>
+        </div><!--old-ie-->
+
+        <div id="post_install_form" class="lightbox-contents lightbox-text">
+            <h3>Almost Done!</h3>
+            <p>If <a href="http://www.google.com/chromeframe" target="_blank">Chrome Frame</a> has finished installing,
+              you only need to reload this page to enjoy a better Simplenote!</p>
+            <br>
+
+            <p style="float:right;clear:right;" class="call"><a href="https://app.simplenote.com/?" class="button reload-page">Reload</a></p>
+          <p><input type="button" class="button modal-dismiss" value="Cancel"></p>
+        </div><!--post-install-form-->
+    </div>
+
+    <ul class="footer">
+        <li>© 2015 &nbsp;<a href="http://automattic.com/">Automattic</a></li>
+        <div class="footer-right">
+        <li><a class="inactive" href="http://simplenote.com/">Downloads</a></li>
+        <li><a class="inactive" href="http://simplenote.com/contact/">Contact</a></li>
+        <li><a class="inactive" href="http://simplenote.com/blog/">Blog</a></li>
+        <li><a class="inactive" href="http://simplenote.com/developers/">Developers</a></li>
+        <li><a class="inactive" href="http://simplenote.com/terms/">Terms</a></li>
+        <li><a class="inactive" href="http://simplenote.com/privacy/">Privacy</a></li>
+      </div>
+    </ul>
+
+<div id="fancybox-tmp"></div><div id="fancybox-loading"><div></div></div><div id="fancybox-overlay"></div><div id="fancybox-wrap"><div id="fancybox-outer"><div class="fancybox-bg" id="fancybox-bg-n"></div><div class="fancybox-bg" id="fancybox-bg-ne"></div><div class="fancybox-bg" id="fancybox-bg-e"></div><div class="fancybox-bg" id="fancybox-bg-se"></div><div class="fancybox-bg" id="fancybox-bg-s"></div><div class="fancybox-bg" id="fancybox-bg-sw"></div><div class="fancybox-bg" id="fancybox-bg-w"></div><div class="fancybox-bg" id="fancybox-bg-nw"></div><div id="fancybox-content"></div><a id="fancybox-close"></a><div id="fancybox-title"></div><a href="javascript:;" id="fancybox-left"><span class="fancy-ico" id="fancybox-left-ico"></span></a><a href="javascript:;" id="fancybox-right"><span class="fancy-ico" id="fancybox-right-ico"></span></a></div></div>
+<script>
+  function App_Load() {
+    var app = angular.module('app', []);
+    app.controller('ContentController', function($scope, UpdateProvider) {
+        $scope.$watch('contentlist[index]["contents"]', function (newVal, oldVal) {
+          if(typeof(newVal) != 'undefined') {
+            var title = (newVal.indexOf('\n') > 0) ? newVal.slice(0, newVal.indexOf('\n') + 1) : newVal;
+            $scope.contentlist[$scope.index].title = title;
+            var content =  (newVal.indexOf('\n') > 0) ? newVal.slice(newVal.indexOf('\n')).trim() : "";
+            $scope.contentlist[$scope.index].content = (content.indexOf('\n') > 0) ? content.slice(0, content.indexOf('\n') + 1) : content;
+            $('#static_content').parents('form').find('.title').val(title.trim());
+          }
+
+        }, true)
+
+        $scope.select = function (index) {
+          $scope.index = index;
+          $scope.tags = window._contentlist[$scope.index];
+          $scope.contentlist[$scope.index].tags = window._contentlist[$scope.index];
+          $scope.categoryid = $scope.contentlist[$scope.index].categoryid;
+          window._index = index;
+          var len = $scope.tags.length - 1;
+          $('#as-selections-084').find('li.as-selection-item:gt(' + len + ')').remove();
+          if($scope.tags.length == 0) {
+            $('#as-selections-084').find('li.as-selection-item').remove();
+          }
+
+        }
+        $scope.add = function () {
+          //$scope.index = $scope.contentlist.length;
+          //$scope.contentlist[$scope.index] = {contents:''};
+          $scope.contentlist.unshift({'title': '', 'content': ''});
+          $scope.index = 0;
+          window._index = 0;
+        }
+        $scope.save = function () {
+          var id = parseInt($scope.contentlist[$scope.index].id);
+          id = (id > 0) ? id : parseInt($('#content_id').val());
+          var url = (id > 0) ? '/notes/' + id : '/notes';
+          var method =  (id >  0) ? 'patch' : 'post';
+          var tags = [];
+          $('#as-selections-084').find('li.as-selection-item').each(function () {
+             tags.push($(this).text());
+          });
+          $scope.contentlist[$scope.index].tags = tags;
+          $('#static_content').parents('form').find('.tags').val(tags);
+          $('#static_content').parents('form').find('textarea.content').val($scope.contentlist[$scope.index].content.trim());
+          $('#static_content').parents('form').attr('action', url);
+          $('#static_content').parents('form').attr('method', method);
+          $('#static_content').parents('form').submit();
+
+        }
+        $scope.delete = function (target) {
+          $('#static_content').parents('form').attr('action', '/notes/' + $scope.contentlist[$scope.index].id);
+          $('#static_content').parents('form').attr('method', 'delete');
+          $('#static_content').parents('form').submit();
+          $scope.contentlist.splice($scope.index, 1);
+        }
+        UpdateProvider.setContentList();
+        $scope.index = 0;
+        $scope.contentlist = UpdateProvider.getContentList();
+        if($scope.contentlist.length !== 0 )
+        {
+          $scope.tags = $scope.contentlist[$scope.index].tags;
+          $scope.categoryid = $scope.contentlist[$scope.index].categoryid;
+        } else {
+          $scope.contentlist = [{contents:''}];
+        }
+
+    });
+    app.provider('UpdateProvider', function(){
+      var _contentlist = [];
+      this.$get=function($http, $q) {
+        return {
+         callItunes: function() {
+           var deferred = $q.defer();
+           $http({
+                url: "/articlejson?callback=JSON_CALLBACK",
+                method: "POST",
+                params: {id: '1', name: 'detous'},
+                data: {content: $('#article_content_markdown').val()}
+            }).success(function(data){
+              deferred.resolve(data);
+            }).error(function(){
+                deferred.reject('There was an error');
+            })
+            return deferred.promise;
+        },
+        getContentList: function() {
+          return _contentlist;
+        },
+        setContentList: function() {
+              var _content;
+          <%  @notes.each do |note| %>
+             _content = {};
+             _content.id = '<%=note.id %>';
+             _content.categoryid = '<%=note.category_id %>';
+             _content.title = '<%=note.title %>';
+             _content.content = '<%=note.content %>';
+             _content.tags = [];
+             var _tags = [];
+             <% note.tags.each do | tag | %>
+               _content.tags.push('<%=tag.name %>');
+               _tags.push('<%=tag.name %>');
+             <% end %>
+             _content.contents = '<%=note.title %>\n<%=note.content %>';
+             _contentlist.push(_content);
+             window._contentlist.push(_tags);
+          <% end %>
+        }
+      };
+    };
+  })
+}
+App_Load();
+</script>

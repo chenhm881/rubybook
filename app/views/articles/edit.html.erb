@@ -1,0 +1,16 @@
+<%=provide(:title, "create a new article") %>
+<%=provide(:css, "#editor {overflow:scroll; max-height:300px}") %>
+<%= render "layouts/header" %>
+<div class="container">
+  <div class="hero-unit">
+    <div class="row">
+       <div class="col-md-3">
+           <%= render 'sidenav_categories' %>
+        </div>
+        <div class="col-md-9" role="main">
+           <div class="container-fluid"><%= render 'form' %></div>
+        </div>
+    </div>
+   
+  </div>
+</div>

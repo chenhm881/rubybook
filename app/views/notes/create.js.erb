@@ -1,0 +1,12 @@
+//$('#note').html($("<%= j(render :partial => 'content', :object => @note) %>"));
+//$('#content').val('');
+
+//$('#static_content').parents('form').find('#note_title').val("<%=@note.content%>");
+$('#content_id').val("<%=@note.id %>");
+$('#static_content').parents('form').find('textarea.content').val("<%=@note.title %>\n<%=@note.content %>");
+$scope.$apply();
+
+
+
+
+

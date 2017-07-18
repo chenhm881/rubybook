@@ -1,0 +1,12 @@
+.note form {height: 100%; width: 100%;}
+.note .content, .note #historytxt { resize: none; font-family: "Source Sans Pro", Helvetica, Arial, sans-serif; font-size: 18px; display: block; width: 100%; height: 100%; background: transparent; border: none; line-height: 1.4em; color: #333; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; padding-left: 60px; padding-right: 140px; padding-top: 20px; padding-bottom: 0px; }
+#login select {
+    padding: 0.3em;
+    font-size: 14px;
+    font-size: 21px;
+    font-weight: 300;
+    max-width: 35em;
+    height: 44px;
+    border: 1px solid #f0f0f0;
+    width: 354px;
+}

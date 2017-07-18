@@ -1,0 +1,10 @@
+//$('#note').html($("<%= j(render :partial => 'content', :object => @note) %>"));
+//$('#content').val('');
+$('#static_content').parents('form').find('textarea.content').val("<%=@note.title %>\n<%=@note.content %>")
+$scope.$apply();
+$('.as-selection-item[ng-repeat != "tag in tags"]').remove();
+
+
+
+
+

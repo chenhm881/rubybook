@@ -1,0 +1,54 @@
+<script type="text/javascript">
+
+(function() {
+  /* Link the css files the note require and remove the application css file
+  begin
+  */ 
+  var lkList = 
+  [
+   {'tagName':'link', 'media': 'screen', 'rel': 'stylesheet', 'type': 'text/css', 'href': 'jquery-ui-1.8.2.custom.trimmed.css.css'},
+   {'tagName':'link', 'media': 'screen', 'rel': 'stylesheet', 'type': 'text/css', 'href': 'editor.css'},
+   {'tagName':'link', 'media': 'screen', 'rel': 'stylesheet', 'type': 'text/css', 'href': 'editor-extension.css'},
+   {'tagName':'link', 'media': 'screen', 'rel': 'stylesheet', 'type': 'text/css', 'href': 'dev.css'},
+   {'tagName':'link', 'media': '', 'rel': 'stylesheet', 'type': 'text/css', 'href': 'css.css'}
+  ];
+  for (var i = 0; i < lkList.length; i++) {
+     var lk = document.createElement(lkList[i].tagName);
+     lk.setAttribute('rel', lkList[i].rel);
+     lk.setAttribute('media', lkList[i].media);
+     lk.setAttribute('href', '/' + lkList[i].href);
+     lk.setAttribute('type', lkList[i].type);
+     $(lk).insertAfter($('head').children('link:last'));   
+  }
+  $('link[rel=stylesheet][href*=application]').remove(); 
+  //end
+})();
+ </script> 
+ <header role="site-navigation">
+<ul class="header">
+    <li><a href="/signup/" class="register active">Create an account</a></li>
+    <li><a href="/signin/" class="sign-in active">Sign in</a></li>
+</ul>
+<h1 class="logo"><a href="http://simplenote.com" title="return to homepage">Simplenote</a></h1>
+</header>
+
+<div id="fullpage">
+<div id="pagewrap">
+
+    <div class="backpages"><div class="page"><div class="inner">
+
+    <div class="primary easy-form account">
+      <h1>Account</h1>
+      <%= render "form" %>
+    </div>
+
+
+
+    <div class="side">
+
+
+    </div>
+
+        </div></div></div>
+</div>
+</div>

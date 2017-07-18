@@ -1,0 +1,38 @@
+<% provide(:title, 'Articles') %>
+      <!-- Static navbar -->
+<%= render "layouts/header" %>
+      <!-- -->
+
+  <header id="sub-header">
+    <div class="container-fluid">
+       <div class="row">
+        <div class="col-md-3">
+           <%= render 'sidenav_categories' %>
+        </div>
+        <div class="col-md-9" role="main">
+           <%= render 'search' %>
+        </div>
+    </div>
+  </div>
+  </header>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+           <%= render 'sidenav_categories' %>
+        </div>
+        <div class="col-md-9">
+           <div class="row">
+              <ul class="search-results" id="articles_list">
+                <% @articles.each do |article| %>
+                  <li>
+                  <h3><%= link_to article.title, article %></h3>
+                  <div><p><%= sanitize article.content %></p></div>
+                  <div></div>
+                </li>
+                <% end %>
+              </ul>
+            <%= will_paginate %>
+           </div>
+        </div>
+    </div>
+</div>

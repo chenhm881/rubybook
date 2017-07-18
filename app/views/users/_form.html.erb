@@ -1,0 +1,23 @@
+      
+      <%  submit_type = "Create"
+            if !@user.email.nil?
+               submit_type = "Update"
+            end
+      %> 
+      <%= form_for(@user) do |f| %>
+      <div id="login">
+            <fieldset class="classic-fieldset">
+            
+            <div class="input-fields">
+            <p><%= f.label :name %><%= f.text_field :name, placeholder: "Name"%></p> 
+            <p><%= f.label :email %><%= f.text_field :email, placeholder: "Email", disabled: !@user.email.nil? %></p>
+            <p><%= f.label :password %><%= f.password_field :password, placeholder: "Password" %></p> 
+            <p><%= f.label :password_confirmation, "Confirmation" %><%= f.password_field :password_confirmation, placeholder: "Confirmation Password" %></p>
+            <label>&nbsp;</label><div class="terms">By <%=submit_type %> an account you agree to our <a class="terms" href="http://simplenote.com/terms/">Terms of Service</a>.</div>
+            </div><!-- input-fields -->
+            <p><%= f.submit "#{submit_type} my account", class: "submit button" %></p>
+              <div id="savestatus"></div>
+            
+            </fieldset>
+        </div>
+        <% end %>

@@ -1,0 +1,40 @@
+<%=provide(:title, "edit tag") %>
+<%= render "layouts/header" %>
+<div class="container">
+  <div class="hero-unit">
+    <div class="row">
+       <div class="col-md-3">
+           <%= render 'articles/sidenav_categories' %>
+        </div>
+        <div class="col-md-9" role="main">
+           <div class="container-fluid">
+              <%= form_for(@tag, as: :tag) do |f| %>
+                  <% if @tag.errors.any? %>
+                  <div id="error_explanation">
+                    <div class="alert alert-error">
+                      The form contains <%= pluralize(@tag.errors.count, "error") %>.
+                    </div>
+                    <ul>
+                    <% @tag.errors.full_messages.each do |msg| %>
+                      <li>* <%= msg %></li>
+                    <% end %>
+                    </ul>
+                  </div>
+                <% end %>
+              <div class="row">
+                 <%=f.label :id %>
+              </div>
+              <div class="row">
+                 <%=f.label :name %>
+                 <%=f.text_field :name %>
+              </div>
+              <div class="row">
+                <%= f.button :submit, class: 'btn btn-lg btn-primary btn-block'%>
+              </div>
+              <% end %>
+           </div>
+        </div>
+    </div>
+   
+  </div>
+</div>
